@@ -54,6 +54,9 @@ assertoor = import_module("./src/assertoor/assertoor_launcher.star")
 get_prefunded_accounts = import_module(
     "./src/prefunded_accounts/get_prefunded_accounts.star"
 )
+syn_flood = import_module(
+    "./src/syn_flood.star"
+)
 
 GRAFANA_USER = "admin"
 GRAFANA_PASSWORD = "admin"
@@ -275,7 +278,7 @@ def run(plan, args={}):
             service_name=first_client_beacon_name,
         )
         if args_with_right_defaults.mev_type == constants.FLASHBOTS_MEV_TYPE:
-            endpoint = flashbots_mev_relay.launch_mev_relay(
+            endpoint, mev_relay_api_prometheus_job, mev_relay_postgres_private_url = flashbots_mev_relay.launch_mev_relay(
                 plan,
                 mev_params,
                 network_id,
@@ -285,6 +288,10 @@ def run(plan, args={}):
                 network_params.seconds_per_slot,
                 persistent,
                 global_node_selectors,
+            )
+            # add prometheus metrics to the list
+            prometheus_additional_metrics_jobs.append(
+                mev_relay_api_prometheus_job
             )
         elif args_with_right_defaults.mev_type == constants.MEV_RS_MEV_TYPE:
             endpoint, relay_ip_address, relay_port = mev_rs_mev_relay.launch_mev_relay(
@@ -625,6 +632,13 @@ def run(plan, args={}):
                 args_with_right_defaults.custom_flood_params,
                 global_node_selectors,
             )
+        elif additional_service == "syn_flood":
+            plan.print("Launching syn flood tool")
+            syn_flood.add_syn_flood(
+                plan,
+                global_node_selectors,
+            )
+            plan.print("Successfully launched syn flood tool")
         else:
             fail("Invalid additional service %s" % (additional_service))
     if launch_prometheus_grafana:
@@ -646,6 +660,7 @@ def run(plan, args={}):
             grafana_datasource_config_template,
             grafana_dashboards_config_template,
             prometheus_private_url,
+            mev_relay_postgres_private_url,
             global_node_selectors,
             additional_dashboards=args_with_right_defaults.grafana_additional_dashboards,
         )
