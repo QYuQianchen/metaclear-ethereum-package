@@ -183,6 +183,20 @@ def launch(
         beacon_service_name, METRICS_PATH, beacon_metrics_url
     )
     nodes_metrics_info = [beacon_node_metrics_info]
+
+    # # before returning the context, add some basic networking tooling to the service
+    # plan.print("adding networking tools...")
+    # plan.exec(
+    #     service_name=beacon_service_name,
+    #     description="installing networking tools",
+    #     recipe=ExecRecipe(
+    #         command=[
+    #             "/bin/sh",
+    #             "-c",
+    #             "apt-get update && apt-get -y install iputils-ping tcpdump",
+    #         ],
+    #     ),
+    # )
     return cl_context.new_cl_context(
         "lighthouse",
         beacon_node_enr,

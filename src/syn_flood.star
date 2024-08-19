@@ -69,6 +69,19 @@ def add_syn_flood(
             entrypoint=ENTRYPOINT_ARGS,
         ),
     )
+    # before returning the context, add some basic networking tooling to the service
+    plan.print("adding networking tools...")
+    plan.exec(
+        service_name=SERVICE_NAME,
+        description="installing networking tools",
+        recipe=ExecRecipe(
+            command=[
+                "/bin/sh",
+                "-c",
+                "apt-get update && apt-get -y install iputils-ping tcpdump",
+            ],
+        ),
+    )
 
     # run the command
     command_result = plan.exec(
