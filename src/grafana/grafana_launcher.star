@@ -40,9 +40,9 @@ USED_PORTS = {
 
 # The min/max CPU/memory that grafana can use
 MIN_CPU = 10
-MAX_CPU = 1000
+MAX_CPU = 2000
 MIN_MEMORY = 128
-MAX_MEMORY = 2048
+MAX_MEMORY = 4096
 
 
 def launch_grafana(
