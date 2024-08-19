@@ -14,30 +14,30 @@ participants:
     el_max_mem: 0
 # CL
     cl_type: lighthouse
-    cl_image: hoprnet/metaclear-lighthouse:c9805b43f
+    cl_image: hoprnet/metaclear-lighthouse:c4275ceaa
     cl_log_level: "debug"
     cl_extra_env_vars: {}
     cl_extra_labels: {}
     cl_extra_params: [] #"--validator-monitor-auto"
     cl_tolerations: []
     cl_volume_size: 0
-    cl_min_cpu: 0
-    cl_max_cpu: 0
-    cl_min_mem: 0
-    cl_max_mem: 0 #300
+    cl_min_cpu: 200 #0
+    cl_max_cpu: 300 #0
+    cl_min_mem: 204 #8
+    cl_max_mem: 204 #8
     use_separate_vc: true
 # Validator
     vc_type: lighthouse
-    vc_image: hoprnet/metaclear-lighthouse:c9805b43f
+    vc_image: hoprnet/metaclear-lighthouse:c4275ceaa
     vc_log_level: "debug"
     vc_extra_env_vars: {}
     vc_extra_labels: {}
     vc_extra_params: []
     vc_tolerations: []
     vc_min_cpu: 0
-    vc_max_cpu: 0 #200
+    vc_max_cpu: 0
     vc_min_mem: 0
-    vc_max_mem: 0 #384
+    vc_max_mem: 0
     validator_count: null
 # participant specific
     node_selectors: {}
@@ -87,7 +87,6 @@ additional_services:
   - tx_spammer
   - blob_spammer
   - custom_flood
-  - el_forkmon
   - beacon_metrics_gazer
   - dora
   - prometheus_grafana
@@ -117,9 +116,9 @@ grafana_additional_dashboards: []
 persistent: false
 mev_type: flashbots
 mev_params:
-  mev_relay_image: hoprnet/metaclear-mev-relayer:1edd2e6
+  mev_relay_image: hoprnet/metaclear-mev-relayer:57a7136
   mev_builder_image: ethpandaops/flashbots-builder:main
-  mev_builder_cl_image: hoprnet/metaclear-lighthouse:c9805b43f
+  mev_builder_cl_image: hoprnet/metaclear-lighthouse:c4275ceaa
   mev_boost_image: flashbots/mev-boost
   mev_boost_args: ["mev-boost", "--relay-check"]
   mev_relay_api_extra_args: []
