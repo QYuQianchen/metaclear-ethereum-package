@@ -42,19 +42,19 @@ def launch(
 
     mev_boost_service = plan.add_service(service_name, config)
 
-    # # before returning the context, add some basic networking tooling to the service
-    # plan.print("adding networking tools...")
-    # plan.exec(
-    #     service_name=service_name,
-    #     description="installing networking tools",
-    #     recipe=ExecRecipe(
-    #         command=[
-    #             "/bin/sh",
-    #             "-c",
-    #             "apk update && apk add --update tcpdump",
-    #         ],
-    #     ),
-    # )
+    # before returning the context, add some basic networking tooling to the service
+    plan.print("adding networking tools...")
+    plan.exec(
+        service_name=service_name,
+        description="installing networking tools",
+        recipe=ExecRecipe(
+            command=[
+                "/bin/sh",
+                "-c",
+                "apk update && apk add --update tcpdump",
+            ],
+        ),
+    )
 
     return mev_boost_context_module.new_mev_boost_context(
         mev_boost_service.ip_address, input_parser.MEV_BOOST_PORT
