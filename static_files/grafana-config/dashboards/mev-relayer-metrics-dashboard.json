@@ -1753,7 +1753,7 @@
           "table": "custom_payload_attributes"
         }
       ],
-      "title": "Panel Title",
+      "title": "RANDAO values",
       "type": "table"
     },
     {
@@ -2320,7 +2320,7 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "Time to take for get payloads request",
+      "description": "Time for relayers to publish a block via its local beacon node",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2365,11 +2365,12 @@
       },
       "id": 29,
       "options": {
+        "combine": false,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         }
       },
       "targets": [
@@ -2380,17 +2381,17 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "relayer_get_payload_duration",
+          "expr": "relayer_beacon_elapsed_time_histogram{endpoint=\"publish_duration\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{endpoint}}",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Duration of validators get payloads from the relayer",
+      "title": "Duration of relayers publish a block via its beacon node",
       "type": "histogram"
     }
   ],
@@ -2407,6 +2408,6 @@
   "timezone": "browser",
   "title": "MEV-Relayer",
   "uid": "bdptbajsec4jka",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
