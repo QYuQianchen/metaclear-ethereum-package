@@ -71,8 +71,14 @@ echo "Please open a new terminal tab and run:
 
 # launch the network
 echo "Please open a new terminal tab and run:
-  source "$SCRIPT_DIR/utils.sh"
-  kurtosis --enclave relaytestnet run "$SCRIPT_DIR" --args-file "$SCRIPT_DIR/network_params.yaml"
+  source "$SCRIPT_DIR/utils.sh" && kurtosis --enclave relaytestnet run "$SCRIPT_DIR" --args-file "$SCRIPT_DIR/network_params.yaml"
+"
+
+# Run some network tests
+echo "Once the kurtosis network is running, you can run some network tests:
+  1. Launch a ping test: \`launch_ping_test\`
+  2. Launch a syn flood attack: \`launch_syn_flood_test\`
+  3. Launch attacknet: \`launch_attacknet\`
 "
 
 # port forward the dashboard
