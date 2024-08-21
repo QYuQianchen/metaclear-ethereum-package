@@ -7,16 +7,22 @@ source "$SCRIPT_DIR/utils.sh"
 
 # Function to check if the image is loaded in Minikube
 check_image_in_minikube() {
-    local image=$1
-    if minikube image ls | grep -q "$image"; then
-        echo "$image is already loaded in Minikube."
-    else
-        echo "$image is NOT found in Minikube. Please build them and load them into Minikube. \n
-        Consider use the following command: \n
-        docker build -f Dockerfile -t "$image" . && minikube image load "$image"
-        "
-        return 1
-    fi
+  local image_key=$1
+  local config_yaml=$2
+
+  # extract image name from the YAML file
+  printf "Check if %s is present in %s...\n" "$image_key" "$config_yaml"
+  local image=$(grep -E '(^|\s)"$image_key"' "$config_yaml" | awk '{print $2}')
+
+  if minikube image ls | grep -q "$image"; then
+    echo "$image is already loaded in Minikube."
+  else
+    echo "$image is NOT found in Minikube. Please build them and load them into Minikube.
+    Consider use the following command:
+    docker build -f Dockerfile -t "$image" . && minikube image load "$image"
+    "
+    return 1
+  fi
 }
 
 
@@ -26,7 +32,7 @@ check_installation "minikube"
 
 # check if minikube is running
 if minikube status -f "{{.Host}}" | grep -q "Running"; then
-  echo "Minikube is already running."
+  echo "Minikube has already been running."
 else
   echo "Minikube is not running. Starting Minikube..."
 
@@ -35,25 +41,22 @@ else
   if [ $? -eq 0 ]; then
     echo "Minikube started successfully."
   else
-    echo "Failed to start Minikube."
+    echo "🚨 Failed to start Minikube."
     exit 1
   fi
 fi
-echo "Please follow https://docs.kurtosis.com/k8s to configure kurtosis for minikube."
-
-# Extract image names from network.yaml
-mev_relay_image=$(extract_image_name "mev_relay_image" "$SCRIPT_DIR/network_params.yaml")
-mev_builder_cl_image=$(extract_image_name "mev_builder_cl_image" "$SCRIPT_DIR/network_params.yaml")
+echo "💡 Please follow https://docs.kurtosis.com/k8s to configure kurtosis for minikube.
+"
 
 # Check if the images are loaded in Minikube
 all_images_loaded=true
-
-check_image_in_minikube "$mev_relay_image" || all_images_loaded=false
-check_image_in_minikube "$mev_builder_cl_image" || all_images_loaded=false
+check_image_in_minikube "mev_relay_image" "$SCRIPT_DIR/network_params.yaml" || all_images_loaded=false
+check_image_in_minikube "mev_builder_cl_image" "$SCRIPT_DIR/network_params.yaml" || all_images_loaded=false
 
 # Print a message if any images are missing
 if [ "$all_images_loaded" = false ]; then
-    echo "Please build and load the missing images into Minikube."
+    echo "🚨 Please build and load the missing images into Minikube.
+"
 fi
 
 # setup metrics for minikube
@@ -65,17 +68,18 @@ kubectl apply -f "$SCRIPT_DIR/static_files/kubernetes-config/dashboard-admin-use
 kubectl apply -f "$SCRIPT_DIR/static_files/kubernetes-config/dashboard-admin-user-secret.yaml"
 
 # launch kurtosis
-echo "Please open a new terminal tab and run:
+echo "
+💡 Please open a new terminal tab and run:
   kurtosis engine start && kurtosis gateway
 "
 
 # launch the network
-echo "Please open a new terminal tab and run:
+echo "💡 Please open a new terminal tab and run:
   source "$SCRIPT_DIR/utils.sh" && kurtosis --enclave relaytestnet run "$SCRIPT_DIR" --args-file "$SCRIPT_DIR/network_params.yaml"
 "
 
 # Run some network tests
-echo "Once the kurtosis network is running, you can run some network tests:
+echo "💡 Once the kurtosis network is running, you can run some network tests:
   1. Launch a ping test: \`launch_ping_test\`
   2. Launch a syn flood attack: \`launch_syn_flood_test\`
   3. Launch attacknet: \`launch_attacknet\`

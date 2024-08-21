@@ -11,14 +11,6 @@ check_installation() {
   fi
 }
 
-# Function to extract image name from the YAML file
-extract_image_name() {
-  local image_key=$1
-  local config_yaml=$2
-  echo "Check if $image_key is present in $config_yaml..."
-  grep "$image_key" "$config_yaml" | awk '{print $2}'
-}
-
 # clean up kurtosis enclave
 kurtosis_cleanup() {
   kurtosis enclave stop relaytestnet
@@ -146,11 +138,11 @@ launch_attacknet() {
   # Possible attack scenarios
   echo "To test some attack scenarios:
   1. Memory stress attack client: \`start_attack_scenario metaclear-memory-stress <path_to_attacknet_folder>\`
-  2. Bandwith attack client: \`network_attack_client metaclear-network-bandwidth <path_to_attacknet_folder>\`
-  3. Clock skew attack client: \`network_attack_client metaclear-clock-skew <path_to_attacknet_folder>\`
+  2. Bandwith attack client: \`start_attack_scenario metaclear-network-bandwidth <path_to_attacknet_folder>\`
+  3. Clock skew attack client: \`start_attack_scenario metaclear-clock-skew <path_to_attacknet_folder>\`
 
-  3. Memory stress attack mev-boost: \`mem_attack_mev_boost <path_to_attacknet_folder>\`
-  4. Network attack mev-boost: \`network_attack_mev_boost <path_to_attacknet_folder>\`
+  3. Memory stress attack mev-boost: \`start_attack_scenario mem_attack_mev_boost <path_to_attacknet_folder>\`
+  4. Network attack mev-boost: \`start_attack_scenario network_attack_mev_boost <path_to_attacknet_folder>\`
   "
 }
 
