@@ -37,7 +37,7 @@ else
   echo "Minikube is not running. Starting Minikube..."
 
   # Start minikube
-  minikube start --driver=docker --alsologtostderr --extra-config=kube-proxy.mode=iptables && eval $(minikube -p minikube docker-env)
+  minikube start --driver=docker --memory=8196 --cpus=2 --extra-config=kube-proxy.mode=iptables --extra-config=kubelet.sync-frequency=0.5m --extra-config=kubelet.eviction-hard="memory.available<500Mi,nodefs.available<10%" --wait-timeout=10m && eval $(minikube -p minikube docker-env)
   if [ $? -eq 0 ]; then
     echo "Minikube started successfully."
   else

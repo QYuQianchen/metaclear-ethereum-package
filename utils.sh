@@ -13,13 +13,23 @@ check_installation() {
 
 # clean up kurtosis enclave
 kurtosis_cleanup() {
-  kurtosis enclave stop relaytestnet
-  kurtosis enclave rm relaytestnet
+  local enclave_name="${1:-relaytestnet}"
+  kurtosis enclave stop $enclave_name
+  kurtosis enclave rm $enclave_name
   kurtosis clean -a
 }
 
 kubectl_cleanup() {
-  kubectl delete ns "kt-relaytestnet" --grace-period=0 --force
+  local ns_name="${1:-kt-relaytestnet}"
+  kubectl delete ns $ns_name --grace-period=0 --force
+}
+
+# When the namespace gets stuck in terminating state
+# see status from `kubectl get ns`
+kubectl_terminate() {
+  local ns_name="${1:-kt-relaytestnet}"
+  kubectl get ns $ns_name -ojson | jq '.spec.finalizers = []' | kubectl replace --raw "/api/v1/namespaces/$ns_name/finalize" -f -
+  kubectl get ns $ns_name -ojson | jq '.metadata.finalizers = []' | kubectl replace --raw "/api/v1/namespaces/$ns_name/finalize" -f -
 }
 
 # Open the UI of a service
@@ -141,8 +151,8 @@ launch_attacknet() {
   2. Bandwith attack client: \`start_attack_scenario metaclear-network-bandwidth <path_to_attacknet_folder>\`
   3. Clock skew attack client: \`start_attack_scenario metaclear-clock-skew <path_to_attacknet_folder>\`
 
-  3. Memory stress attack mev-boost: \`start_attack_scenario mem_attack_mev_boost <path_to_attacknet_folder>\`
-  4. Network attack mev-boost: \`start_attack_scenario network_attack_mev_boost <path_to_attacknet_folder>\`
+  4. Memory stress attack mev-boost: \`start_attack_scenario metaclear-boost-memory-stress <path_to_attacknet_folder>\`
+  5. Bandwith attack mev-boost: \`start_attack_scenario metaclear-boost-network-bandwidth <path_to_attacknet_folder>\`
   "
 }
 
