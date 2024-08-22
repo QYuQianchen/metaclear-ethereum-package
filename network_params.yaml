@@ -42,7 +42,7 @@ participants:
 # participant specific
     node_selectors: {}
     tolerations: []
-    count: 2
+    count: 3
     snooper_enabled: true
     ethereum_metrics_exporter_enabled: true
     # xatu_sentry_enabled: true
@@ -118,7 +118,7 @@ mev_params:
   mev_relay_image: hoprnet/metaclear-mev-relayer:a96c4b6
   launch_custom_flood: true
   # mev_builder_image: ethpandaops/flashbots-builder:main
-  # mev_builder_cl_image: hoprnet/metaclear-lighthouse:93bb8f305
+  mev_builder_cl_image: hoprnet/metaclear-lighthouse:93bb8f305
   mev_boost_image: flashbots/mev-boost
   mev_boost_args: ["mev-boost", "--relay-check"]
   mev_relay_api_extra_args: []

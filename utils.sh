@@ -147,12 +147,9 @@ launch_attacknet() {
 
   # Possible attack scenarios
   echo "To test some attack scenarios:
-  1. Memory stress attack client: \`start_attack_scenario metaclear-memory-stress <path_to_attacknet_folder>\`
-  2. Bandwith attack client: \`start_attack_scenario metaclear-network-bandwidth <path_to_attacknet_folder>\`
-  3. Clock skew attack client: \`start_attack_scenario metaclear-clock-skew <path_to_attacknet_folder>\`
-
-  4. Memory stress attack mev-boost: \`start_attack_scenario metaclear-boost-memory-stress <path_to_attacknet_folder>\`
-  5. Bandwith attack mev-boost: \`start_attack_scenario metaclear-boost-network-bandwidth <path_to_attacknet_folder>\`
+  1. Memory stress attack: \`start_attack_scenario metaclear-memory-stress <path_to_attacknet_folder>\`
+  2. Bandwith attack: \`start_attack_scenario metaclear-network-bandwidth <path_to_attacknet_folder>\`
+  3. Clock skew attack: \`start_attack_scenario metaclear-clock-skew <path_to_attacknet_folder>\`
   "
 }
 
