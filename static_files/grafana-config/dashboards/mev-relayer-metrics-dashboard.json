@@ -2625,8 +2625,8 @@
     "list": []
   },
   "time": {
-    "from": "2024-08-22T16:33:00.000Z",
-    "to": "2024-08-22T17:00:00.000Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
