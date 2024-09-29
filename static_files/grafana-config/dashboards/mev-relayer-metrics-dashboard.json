@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -1146,7 +1146,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 860
+                "value": 382
               }
             ]
           },
@@ -1158,7 +1158,19 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 480
+                "value": 410
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "MEV Boost instance"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 174
               }
             ]
           }
@@ -1304,11 +1316,11 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMin": 0,
             "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1316,17 +1328,17 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "smooth",
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "always",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -1359,12 +1371,12 @@
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "hidden",
-          "placement": "right",
-          "showLegend": false
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -1378,7 +1390,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "-- SELECT slot, date_trunc('minute', inserted_at) as timestamp_in_minute\nSELECT count(slot), date_trunc('minute', inserted_at) as timestamp_in_minute\nFROM custom_payload_delivered\nGROUP BY timestamp_in_minute\nLIMIT 100",
+          "rawSql": "SELECT \n    count(slot), \n    -- specify interval\n    date_trunc('minute', inserted_at) - INTERVAL '1 minute' * (EXTRACT(minute FROM inserted_at)::int % 5) AS timestamp_in_x_minute\nFROM \n    custom_payload_delivered\nGROUP BY \n    timestamp_in_x_minute\nORDER BY \n    timestamp_in_x_minute;\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1414,7 +1426,7 @@
           "table": "custom_payload_delivered"
         }
       ],
-      "title": "Number of slots containing blocks proposed by block builders via MEV-Relay per minute",
+      "title": "Number of slots containing blocks proposed by block builders via MEV-Relay per 5 min",
       "type": "timeseries"
     },
     {
@@ -1426,39 +1438,16 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 70,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "lineWidth": 1
           },
           "mappings": [],
           "thresholds": {
@@ -1470,7 +1459,7 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 12.01
               }
             ]
           },
@@ -1486,14 +1475,16 @@
       },
       "id": 31,
       "options": {
+        "colWidth": 0.9,
         "legend": {
-          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "rowHeight": 0.9,
+        "showValue": "auto",
         "tooltip": {
-          "mode": "multi",
+          "mode": "single",
           "sort": "none"
         }
       },
@@ -1504,15 +1495,17 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(beacon_block_production_slot_process_seconds_sum[1m])\n/\nrate(beacon_block_production_slot_process_seconds_count[1m])",
+          "editorMode": "code",
+          "expr": "delta(beacon_head_slot{job!=\"cl-4-lighthouse-geth-builder\"}[1m])",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{job}}",
           "queryType": "randomWalk",
+          "range": true,
           "refId": "A"
         }
       ],
       "title": "Slot Processing",
-      "type": "timeseries"
+      "type": "status-history"
     },
     {
       "collapsed": false,
@@ -1589,7 +1582,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 146
+                "value": 115
               }
             ]
           }
@@ -2492,7 +2485,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2569,7 +2563,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2625,13 +2620,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
-    "to": "now"
+    "from": "2024-09-29T21:55:00.000Z",
+    "to": "2024-09-29T22:55:00.000Z"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "MEV-Relayer",
   "uid": "bdptbajsec4jka",
-  "version": 5,
+  "version": 4,
   "weekStart": ""
 }
